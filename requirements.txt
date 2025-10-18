@@ -1,0 +1,5 @@
+# PySimpleGUI must be installed from private server:
+# python -m pip install --upgrade --extra-index-url https://PySimpleGUI.net/install PySimpleGUI
+PySimpleGUI>=5.0.10
+psutil>=5.9.0
+win10toast>=0.9

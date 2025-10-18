@@ -1,0 +1,6 @@
+@echo off
+echo Activating conda environment py39...
+call conda activate py39
+echo Starting Terraria Timekeeper...
+python terraria_timekeeper.py
+pause
