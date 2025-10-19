@@ -1,0 +1,10 @@
+# Kivy GUI Framework
+kivy>=2.1.0
+
+# Process monitoring
+psutil>=5.9.0
+
+# Windows notifications
+win10toast>=0.9
+
+# Note: PySimpleGUI is not needed for Kivy version

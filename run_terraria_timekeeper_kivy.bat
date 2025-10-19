@@ -1,0 +1,6 @@
+@echo off
+echo Activating conda environment py39...
+call conda activate py39
+echo Starting Terraria Timekeeper (Kivy GUI)...
+python terraria_timekeeper_kivy.py
+pause
