@@ -231,7 +231,10 @@ class MainScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.monitor_thread = None
-        
+        self.build_ui()
+    
+    def build_ui(self):
+        """Build the user interface"""
         # Main layout
         main_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
         
@@ -331,12 +334,7 @@ class MainScreen(Screen):
         # Schedule status updates
         Clock.schedule_interval(self.update_terraria_status, 1.0)
         
-        # Store references for easy access
-        self.ids = type('Ids', (), {
-            'remaining_label': self.remaining_label,
-            'progress_bar': self.progress_bar,
-            'terraria_status': self.terraria_status
-        })()
+        # Store references for easy access (no need for custom ids object)
 
     def update_terraria_status(self, dt):
         """Update Terraria running status"""
