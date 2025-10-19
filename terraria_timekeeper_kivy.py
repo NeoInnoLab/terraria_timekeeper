@@ -20,6 +20,7 @@ import psutil
 from typing import Union, Optional
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
@@ -30,8 +31,7 @@ from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle, Color, RoundedRectangle
+from kivy.graphics import Rectangle, Color
 from kivy.logger import Logger
 
 try:
@@ -55,20 +55,6 @@ PROCESS_NAME = "Terraria.exe"
 LOG_CSV = "rewards_log.csv"
 TOTAL_JSON = "rewards_total.json"
 POINTS_PER_MIN_EARLY = 10  # tweak if you like
-
-# Terraria-inspired color palette
-TERRARIA_COLORS = {
-    'sky_blue': (0.4, 0.7, 1.0, 1.0),      # Sky blue
-    'mountain_grey': (0.3, 0.3, 0.4, 1.0),  # Mountain grey
-    'grass_green': (0.2, 0.6, 0.2, 1.0),    # Grass green
-    'dirt_brown': (0.4, 0.3, 0.2, 1.0),     # Dirt brown
-    'sun_yellow': (1.0, 0.9, 0.3, 1.0),     # Sun yellow
-    'cloud_white': (0.9, 0.9, 0.95, 1.0),   # Cloud white
-    'dark_green': (0.1, 0.4, 0.1, 1.0),     # Dark green for blocks
-    'gold': (1.0, 0.8, 0.0, 1.0),           # Gold accents
-    'text_white': (0.95, 0.95, 0.95, 1.0),  # Text white
-    'button_brown': (0.5, 0.4, 0.3, 1.0),   # Button brown
-}
 
 def is_process_running(name: str) -> bool:
     for p in psutil.process_iter(["name"]):
@@ -100,8 +86,8 @@ def ensure_files():
         with open(TOTAL_JSON, "w", encoding="utf-8") as f:
             json.dump({"total_points": 0}, f)
 
-class TerrariaBackground(Widget):
-    """Terraria-inspired background with landscape elements"""
+class TerrariaBackground(FloatLayout):
+    """Terraria-inspired background with pixel art style"""
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -111,88 +97,39 @@ class TerrariaBackground(Widget):
     def update_graphics(self, *args):
         self.canvas.before.clear()
         with self.canvas.before:
-            # Sky gradient
-            Color(*TERRARIA_COLORS['sky_blue'])
+            # Sky blue background
+            Color(0.4, 0.7, 1.0, 0.9)
             Rectangle(pos=self.pos, size=self.size)
             
-            # Mountains
-            Color(*TERRARIA_COLORS['mountain_grey'])
-            mountain_height = self.height * 0.4
-            mountain_y = self.y + self.height * 0.3
+            # Mountain silhouette
+            Color(0.2, 0.3, 0.4, 0.8)
+            mountain_points = [
+                self.x, self.y + self.height * 0.3,
+                self.x + self.width * 0.2, self.y + self.height * 0.6,
+                self.x + self.width * 0.4, self.y + self.height * 0.4,
+                self.x + self.width * 0.6, self.y + self.height * 0.7,
+                self.x + self.width * 0.8, self.y + self.height * 0.5,
+                self.x + self.width, self.y + self.height * 0.3,
+                self.x + self.width, self.y,
+                self.x, self.y
+            ]
+            # Note: Kivy doesn't have built-in polygon drawing, so we'll use rectangles
+            # Mountain peak 1
+            Rectangle(pos=(self.x + self.width * 0.1, self.y + self.height * 0.3), 
+                     size=(self.width * 0.3, self.height * 0.4))
+            # Mountain peak 2
+            Rectangle(pos=(self.x + self.width * 0.5, self.y + self.height * 0.3), 
+                     size=(self.width * 0.4, self.height * 0.5))
             
             # Ground
-            Color(*TERRARIA_COLORS['grass_green'])
-            Rectangle(pos=(self.x, self.y), size=(self.width, self.height * 0.1))
+            Color(0.1, 0.4, 0.1, 0.9)
+            Rectangle(pos=(self.x, self.y), size=(self.width, self.height * 0.3))
             
             # Sun
-            Color(*TERRARIA_COLORS['sun_yellow'])
-            sun_size = 60
-            Rectangle(pos=(self.x + self.width - 100, self.y + self.height - 100), 
+            Color(1.0, 0.9, 0.3, 0.8)
+            sun_size = min(self.width, self.height) * 0.15
+            Rectangle(pos=(self.x + self.width - sun_size - 20, self.y + self.height - sun_size - 20), 
                      size=(sun_size, sun_size))
-            
-            # Clouds
-            Color(*TERRARIA_COLORS['cloud_white'])
-            cloud_size = 40
-            Rectangle(pos=(self.x + 50, self.y + self.height - 80), size=(cloud_size, cloud_size))
-            Rectangle(pos=(self.x + 200, self.y + self.height - 120), size=(cloud_size, cloud_size))
-            Rectangle(pos=(self.x + 400, self.y + self.height - 90), size=(cloud_size, cloud_size))
-
-class TerrariaButton(Button):
-    """Terraria-inspired button with block-like appearance"""
-    
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_color = TERRARIA_COLORS['button_brown']
-        self.color = TERRARIA_COLORS['text_white']
-        self.font_size = 16
-        self.bold = True
-        
-        # Add block-like border effect
-        with self.canvas.before:
-            Color(*TERRARIA_COLORS['dark_green'])
-            self.border_rect = Rectangle()
-        
-        self.bind(size=self.update_border, pos=self.update_border)
-        self.update_border()
-    
-    def update_border(self, *args):
-        if hasattr(self, 'border_rect'):
-            border_width = 3
-            self.border_rect.pos = (self.x - border_width, self.y - border_width)
-            self.border_rect.size = (self.width + 2 * border_width, self.height + 2 * border_width)
-
-class TerrariaLabel(Label):
-    """Terraria-inspired label with game-like styling"""
-    
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.color = TERRARIA_COLORS['text_white']
-        self.font_size = 18
-        self.bold = True
-
-class TerrariaTextInput(TextInput):
-    """Terraria-inspired text input with block-like appearance"""
-    
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.background_color = TERRARIA_COLORS['button_brown']
-        self.color = TERRARIA_COLORS['text_white']
-        self.font_size = 16
-        self.multiline = False
-        
-        # Add block-like border
-        with self.canvas.before:
-            Color(*TERRARIA_COLORS['dark_green'])
-            self.border_rect = Rectangle()
-        
-        self.bind(size=self.update_border, pos=self.update_border)
-        self.update_border()
-    
-    def update_border(self, *args):
-        if hasattr(self, 'border_rect'):
-            border_width = 2
-            self.border_rect.pos = (self.x - border_width, self.y - border_width)
-            self.border_rect.size = (self.width + 2 * border_width, self.height + 2 * border_width)
 
 class MonitorThread(threading.Thread):
     def __init__(self, planned_end: dt.datetime, mode_desc: str, session_start: dt.datetime, app_instance):
@@ -289,23 +226,26 @@ class MonitorThread(threading.Thread):
 
     def update_ui(self, remaining_seconds):
         """Update UI elements on main thread"""
-        if hasattr(self.app, 'root') and hasattr(self.app.root, 'ids'):
-            if remaining_seconds > 0:
-                m, s = divmod(int(remaining_seconds), 60)
-                h, m = divmod(m, 60)
-                if h > 0:
-                    time_str = f"{h:02d}:{m:02d}:{s:02d}"
+        if hasattr(self.app, 'root'):
+            # Get the main screen
+            main_screen = self.app.root.get_screen('main')
+            if hasattr(main_screen, 'remaining_label') and hasattr(main_screen, 'progress_bar'):
+                if remaining_seconds > 0:
+                    m, s = divmod(int(remaining_seconds), 60)
+                    h, m = divmod(m, 60)
+                    if h > 0:
+                        time_str = f"{h:02d}:{m:02d}:{s:02d}"
+                    else:
+                        time_str = f"{m:02d}:{s:02d}"
+                    main_screen.remaining_label.text = time_str
+                    
+                    # Update progress bar
+                    total_seconds = (self.planned_end - self.session_start).total_seconds()
+                    progress = max(0, min(1, remaining_seconds / total_seconds))
+                    main_screen.progress_bar.value = progress
                 else:
-                    time_str = f"{m:02d}:{s:02d}"
-                self.app.root.ids.remaining_label.text = time_str
-                
-                # Update progress bar
-                total_seconds = (self.planned_end - self.session_start).total_seconds()
-                progress = max(0, min(1, remaining_seconds / total_seconds))
-                self.app.root.ids.progress_bar.value = progress
-            else:
-                self.app.root.ids.remaining_label.text = "Time's up!"
-                self.app.root.ids.progress_bar.value = 0
+                    main_screen.remaining_label.text = "Time's up!"
+                    main_screen.progress_bar.value = 0
 
     def show_reminder_popup(self, minutes):
         """Show reminder popup"""
@@ -344,111 +284,256 @@ class MainScreen(Screen):
         self.build_ui()
     
     def build_ui(self):
-        """Build the user interface"""
+        """Build the user interface with Terraria background"""
         # Add Terraria background
         self.background = TerrariaBackground()
         self.add_widget(self.background)
         
-        # Main layout with transparency for background visibility
-        main_layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
+        # Main content layout (overlay on background)
+        main_layout = FloatLayout()
         
-        # Title with Terraria styling
-        title_label = TerrariaLabel(
+        # Title (top center)
+        title_label = Label(
             text='TERRARIA TIMEKEEPER',
-            size_hint_y=None,
-            height=60,
-            font_size=28,
-            color=TERRARIA_COLORS['gold']
+            size_hint=(None, None),
+            size=(280, 30),
+            pos_hint={'center_x': 0.5, 'top': 0.95},
+            font_size=16,
+            bold=True,
+            color=(1, 1, 1, 1)
         )
         main_layout.add_widget(title_label)
         
-        # Mode selection
-        mode_frame = BoxLayout(orientation='vertical', size_hint_y=None, height=200)
-        mode_label = TerrariaLabel(text='MODE SELECTION:', size_hint_y=None, height=30, font_size=16)
-        mode_frame.add_widget(mode_label)
+        # Mode selection (left side)
+        mode_y = 0.75
+        mode_label = Label(
+            text='MODE:',
+            size_hint=(None, None),
+            size=(80, 20),
+            pos_hint={'x': 0.05, 'top': mode_y},
+            font_size=12,
+            bold=True,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(mode_label)
         
         # Duration mode
-        duration_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)
-        self.duration_radio = ToggleButton(group='mode', state='down', size_hint_x=None, width=30, text='●')
+        self.duration_radio = ToggleButton(
+            group='mode',
+            state='down',
+            size_hint=(None, None),
+            size=(20, 20),
+            pos_hint={'x': 0.05, 'top': mode_y - 0.1},
+            text='●'
+        )
         self.duration_radio.bind(on_press=self.on_duration_selected)
-        duration_layout.add_widget(self.duration_radio)
-        duration_layout.add_widget(TerrariaLabel(text='Play for hours/minutes/seconds:', size_hint_x=None, width=200))
+        main_layout.add_widget(self.duration_radio)
+        
+        duration_text = Label(
+            text='Duration:',
+            size_hint=(None, None),
+            size=(60, 20),
+            pos_hint={'x': 0.15, 'top': mode_y - 0.1},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(duration_text)
         
         # Duration inputs
-        duration_inputs = BoxLayout(orientation='horizontal', size_hint_x=None, width=300)
-        duration_inputs.add_widget(TerrariaLabel(text='Hours:', size_hint_x=None, width=50))
-        self.hours_input = TerrariaTextInput(text='0', multiline=False, size_hint_x=None, width=60)
-        duration_inputs.add_widget(self.hours_input)
-        duration_inputs.add_widget(TerrariaLabel(text='Min:', size_hint_x=None, width=40))
-        self.minutes_input = TerrariaTextInput(text='30', multiline=False, size_hint_x=None, width=60)
-        duration_inputs.add_widget(self.minutes_input)
-        duration_inputs.add_widget(TerrariaLabel(text='Sec:', size_hint_x=None, width=40))
-        self.seconds_input = TerrariaTextInput(text='0', multiline=False, size_hint_x=None, width=60)
-        duration_inputs.add_widget(self.seconds_input)
-        duration_layout.add_widget(duration_inputs)
-        mode_frame.add_widget(duration_layout)
+        self.hours_input = TextInput(
+            text='0',
+            multiline=False,
+            size_hint=(None, None),
+            size=(30, 20),
+            pos_hint={'x': 0.25, 'top': mode_y - 0.1},
+            font_size=10
+        )
+        main_layout.add_widget(self.hours_input)
+        
+        h_label = Label(
+            text='h',
+            size_hint=(None, None),
+            size=(15, 20),
+            pos_hint={'x': 0.35, 'top': mode_y - 0.1},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(h_label)
+        
+        self.minutes_input = TextInput(
+            text='30',
+            multiline=False,
+            size_hint=(None, None),
+            size=(30, 20),
+            pos_hint={'x': 0.42, 'top': mode_y - 0.1},
+            font_size=10
+        )
+        main_layout.add_widget(self.minutes_input)
+        
+        m_label = Label(
+            text='m',
+            size_hint=(None, None),
+            size=(15, 20),
+            pos_hint={'x': 0.52, 'top': mode_y - 0.1},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(m_label)
+        
+        self.seconds_input = TextInput(
+            text='0',
+            multiline=False,
+            size_hint=(None, None),
+            size=(30, 20),
+            pos_hint={'x': 0.59, 'top': mode_y - 0.1},
+            font_size=10
+        )
+        main_layout.add_widget(self.seconds_input)
+        
+        s_label = Label(
+            text='s',
+            size_hint=(None, None),
+            size=(15, 20),
+            pos_hint={'x': 0.69, 'top': mode_y - 0.1},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(s_label)
         
         # Until mode
-        until_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)
-        self.until_radio = ToggleButton(group='mode', state='normal', size_hint_x=None, width=30, text='○')
+        self.until_radio = ToggleButton(
+            group='mode',
+            state='normal',
+            size_hint=(None, None),
+            size=(20, 20),
+            pos_hint={'x': 0.05, 'top': mode_y - 0.25},
+            text='○'
+        )
         self.until_radio.bind(on_press=self.on_until_selected)
-        until_layout.add_widget(self.until_radio)
-        until_layout.add_widget(TerrariaLabel(text='Play until time (HH:MM):', size_hint_x=None, width=150))
-        self.until_input = TerrariaTextInput(text='22:30', multiline=False, size_hint_x=None, width=100)
-        until_layout.add_widget(self.until_input)
-        mode_frame.add_widget(until_layout)
+        main_layout.add_widget(self.until_radio)
         
-        main_layout.add_widget(mode_frame)
+        until_text = Label(
+            text='Until:',
+            size_hint=(None, None),
+            size=(40, 20),
+            pos_hint={'x': 0.15, 'top': mode_y - 0.25},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(until_text)
         
-        # Status section
-        status_layout = BoxLayout(orientation='vertical', size_hint_y=None, height=150)
+        self.until_input = TextInput(
+            text='22:30',
+            multiline=False,
+            size_hint=(None, None),
+            size=(50, 20),
+            pos_hint={'x': 0.25, 'top': mode_y - 0.25},
+            font_size=10
+        )
+        main_layout.add_widget(self.until_input)
         
-        # Terraria status
-        terraria_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=30)
-        terraria_layout.add_widget(TerrariaLabel(text='Terraria Status:', size_hint_x=None, width=120))
-        self.terraria_status = TerrariaLabel(text='Detecting...', size_hint_x=None, width=100)
-        terraria_layout.add_widget(self.terraria_status)
-        status_layout.add_widget(terraria_layout)
+        # Status section (right side)
+        status_y = 0.65
+        terraria_label = Label(
+            text='Terraria:',
+            size_hint=(None, None),
+            size=(60, 20),
+            pos_hint={'x': 0.05, 'top': status_y},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(terraria_label)
+        
+        self.terraria_status = Label(
+            text='Detecting...',
+            size_hint=(None, None),
+            size=(80, 20),
+            pos_hint={'x': 0.25, 'top': status_y},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(self.terraria_status)
         
         # Remaining time
-        remaining_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=30)
-        remaining_layout.add_widget(TerrariaLabel(text='Remaining Time:', size_hint_x=None, width=120))
-        self.remaining_label = TerrariaLabel(text='-', size_hint_x=None, width=100, font_size=16, color=TERRARIA_COLORS['gold'])
-        remaining_layout.add_widget(self.remaining_label)
-        status_layout.add_widget(remaining_layout)
+        remaining_label = Label(
+            text='Time:',
+            size_hint=(None, None),
+            size=(40, 20),
+            pos_hint={'x': 0.05, 'top': status_y - 0.08},
+            font_size=10,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(remaining_label)
+        
+        self.remaining_label = Label(
+            text='-',
+            size_hint=(None, None),
+            size=(80, 20),
+            pos_hint={'x': 0.25, 'top': status_y - 0.08},
+            font_size=10,
+            bold=True,
+            color=(1, 0.8, 0, 1)
+        )
+        main_layout.add_widget(self.remaining_label)
         
         # Progress bar
-        progress_layout = BoxLayout(orientation='vertical', size_hint_y=None, height=60)
-        progress_layout.add_widget(TerrariaLabel(text='Progress:', size_hint_y=None, height=20))
-        self.progress_bar = ProgressBar(max=1, value=0, size_hint_y=None, height=30)
-        progress_layout.add_widget(self.progress_bar)
-        status_layout.add_widget(progress_layout)
+        progress_label = Label(
+            text='Progress:',
+            size_hint=(None, None),
+            size=(60, 15),
+            pos_hint={'x': 0.05, 'top': status_y - 0.16},
+            font_size=9,
+            color=(1, 1, 1, 1)
+        )
+        main_layout.add_widget(progress_label)
         
-        main_layout.add_widget(status_layout)
+        self.progress_bar = ProgressBar(
+            max=1,
+            value=0,
+            size_hint=(None, None),
+            size=(150, 15),
+            pos_hint={'x': 0.25, 'top': status_y - 0.16}
+        )
+        main_layout.add_widget(self.progress_bar)
         
-        # Control buttons
-        button_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=50, spacing=10)
-        
-        self.start_button = TerrariaButton(text='START', size_hint_x=0.3)
+        # Control buttons (bottom)
+        self.start_button = Button(
+            text='START',
+            size_hint=(None, None),
+            size=(80, 25),
+            pos_hint={'x': 0.05, 'top': 0.25},
+            font_size=10,
+            bold=True
+        )
         self.start_button.bind(on_press=self.start_timer)
-        button_layout.add_widget(self.start_button)
+        main_layout.add_widget(self.start_button)
         
-        self.stop_button = TerrariaButton(text='STOP', size_hint_x=0.3)
+        self.stop_button = Button(
+            text='STOP',
+            size_hint=(None, None),
+            size=(80, 25),
+            pos_hint={'x': 0.37, 'top': 0.25},
+            font_size=10,
+            bold=True
+        )
         self.stop_button.bind(on_press=self.stop_timer)
-        button_layout.add_widget(self.stop_button)
+        main_layout.add_widget(self.stop_button)
         
-        self.exit_button = TerrariaButton(text='EXIT', size_hint_x=0.3)
+        self.exit_button = Button(
+            text='EXIT',
+            size_hint=(None, None),
+            size=(80, 25),
+            pos_hint={'x': 0.69, 'top': 0.25},
+            font_size=10,
+            bold=True
+        )
         self.exit_button.bind(on_press=self.exit_app)
-        button_layout.add_widget(self.exit_button)
-        
-        main_layout.add_widget(button_layout)
+        main_layout.add_widget(self.exit_button)
         
         self.add_widget(main_layout)
         
         # Schedule status updates
         Clock.schedule_interval(self.update_terraria_status, 1.0)
-        
-        # Store references for easy access (no need for custom ids object)
 
     def update_terraria_status(self, dt):
         """Update Terraria running status"""
@@ -513,15 +598,15 @@ class MainScreen(Screen):
         
         # Update UI
         remaining = int((planned_end - now()).total_seconds())
-        self.ids.remaining_label.text = self.format_seconds(remaining)
+        self.remaining_label.text = self.format_seconds(remaining)
 
     def stop_timer(self, instance):
         """Stop the timer"""
         if self.monitor_thread and self.monitor_thread.is_alive():
             self.monitor_thread.stop()
             self.monitor_thread = None
-            self.ids.remaining_label.text = "Stopped"
-            self.ids.progress_bar.value = 0
+            self.remaining_label.text = "Stopped"
+            self.progress_bar.value = 0
             self.show_popup("Info", "Timer stopped.")
         else:
             self.show_popup("Info", "No timer is currently running.")
@@ -555,6 +640,11 @@ class TerrariaTimekeeperApp(App):
     def build(self):
         """Build the application"""
         self.title = APP_NAME
+        
+        # Set window size to 300x200
+        Window.size = (300, 200)
+        Window.minimum_width = 300
+        Window.minimum_height = 200
         
         # Create screen manager
         sm = ScreenManager()
