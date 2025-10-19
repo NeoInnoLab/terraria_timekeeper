@@ -19,12 +19,17 @@ We successfully developed a comprehensive Terraria gaming time management applic
 - **Dual Notification System**: Toast notifications + Popup alerts
 - **Reward System**: Points for early game completion
 - **Data Logging**: CSV and JSON file tracking
+- **Dual GUI Versions**: PySimpleGUI (classic) and Kivy (modern)
 
 ### Notification System
 - **5/3/1 minute reminders**: Precise timing with popup alerts
 - **Time-up notifications**: Clear end-of-session alerts
 - **Early finish rewards**: Celebration notifications with point tracking
 - **OK button functionality**: Manual popup dismissal
+
+### GUI Versions
+- **PySimpleGUI Version**: Stable, lightweight, Windows-focused
+- **Kivy Version**: Modern, cross-platform, Terraria-themed background
 
 ## 🔧 Technical Challenges & Solutions
 
@@ -105,6 +110,41 @@ def show_popup_alert(message, title="Terraria Timekeeper Alert", duration=10):
 ```
 **Lesson**: Always provide user control options in GUI applications
 
+### Challenge 7: Kivy GUI Framework Implementation
+**Problem**: Need to create a modern GUI version using Kivy framework
+**Root Cause**: User requested modern interface with better visual appeal
+**Solution**: Implemented complete Kivy version with custom background
+```python
+class TerrariaBackground(FloatLayout):
+    def update_graphics(self, *args):
+        with self.canvas.before:
+            # Sky blue background
+            Color(0.4, 0.7, 1.0, 0.9)
+            Rectangle(pos=self.pos, size=self.size)
+            # Mountain silhouettes and sun
+```
+**Lesson**: Modern GUI frameworks can significantly improve user experience
+
+### Challenge 8: Kivy Radio Button Implementation
+**Problem**: Kivy doesn't have built-in RadioButton widget
+**Root Cause**: Different widget system compared to PySimpleGUI
+**Solution**: Used ToggleButton with group binding for radio button behavior
+```python
+self.duration_radio = ToggleButton(group='mode', state='down', text='●')
+self.until_radio = ToggleButton(group='mode', state='normal', text='○')
+```
+**Lesson**: Adapt to framework-specific widget implementations
+
+### Challenge 9: Kivy UI Layout and Sizing
+**Problem**: Text too small and overlapping in compact 300x200 window
+**Root Cause**: Insufficient space for all UI elements
+**Solution**: Increased window to 300x400 and optimized all element sizes
+```python
+Window.size = (300, 400)
+# Increased font sizes: title (20px), labels (14-16px), inputs (12px)
+```
+**Lesson**: UI design requires careful balance between functionality and usability
+
 ## 🛠️ Development Workflow
 
 ### 1. Environment Setup
@@ -134,7 +174,9 @@ def show_popup_alert(message, title="Terraria Timekeeper Alert", duration=10):
 - **Package Installation**: Handling private repositories and dependencies
 - **Python Compatibility**: Writing code for specific Python versions
 - **Windows Development**: Handling encoding and execution policies
-- **GUI Development**: Creating user-friendly interfaces with PySimpleGUI
+- **GUI Development**: Creating user-friendly interfaces with PySimpleGUI and Kivy
+- **Cross-Platform Development**: Using Kivy for multi-platform applications
+- **UI/UX Design**: Balancing functionality with visual appeal
 
 ### Problem-Solving Approach
 - **Root Cause Analysis**: Always identify the underlying issue
@@ -164,12 +206,17 @@ def show_popup_alert(message, title="Terraria Timekeeper Alert", duration=10):
 - **雙重通知系統**：Toast 通知 + 彈出視窗提醒
 - **獎勵系統**：提前結束遊戲獲得點數
 - **資料記錄**：CSV 和 JSON 檔案追蹤
+- **雙版本 GUI**：PySimpleGUI（經典版）和 Kivy（現代版）
 
 ### 通知系統
 - **5/3/1 分鐘提醒**：精確時機的彈出視窗提醒
 - **時間到通知**：清晰的遊戲結束提醒
 - **提前結束獎勵**：慶祝通知與點數追蹤
 - **OK 按鈕功能**：手動關閉彈出視窗
+
+### GUI 版本
+- **PySimpleGUI 版本**：穩定、輕量、Windows 專用
+- **Kivy 版本**：現代化、跨平台、Terraria 風格背景
 
 ## 🔧 技術挑戰與解決方案
 
@@ -250,6 +297,41 @@ def show_popup_alert(message, title="Terraria Timekeeper Alert", duration=10):
 ```
 **學習要點**：在 GUI 應用程式中，務必提供使用者控制選項
 
+### 挑戰 7：Kivy GUI 框架實現
+**問題**：需要使用 Kivy 框架創建現代化 GUI 版本
+**根本原因**：使用者要求具有更好視覺效果的現代介面
+**解決方案**：實現完整的 Kivy 版本，包含自訂背景
+```python
+class TerrariaBackground(FloatLayout):
+    def update_graphics(self, *args):
+        with self.canvas.before:
+            # 天空藍色背景
+            Color(0.4, 0.7, 1.0, 0.9)
+            Rectangle(pos=self.pos, size=self.size)
+            # 山脈輪廓和太陽
+```
+**學習要點**：現代 GUI 框架能顯著改善使用者體驗
+
+### 挑戰 8：Kivy 單選按鈕實現
+**問題**：Kivy 沒有內建的 RadioButton 元件
+**根本原因**：與 PySimpleGUI 不同的元件系統
+**解決方案**：使用 ToggleButton 配合群組綁定實現單選按鈕行為
+```python
+self.duration_radio = ToggleButton(group='mode', state='down', text='●')
+self.until_radio = ToggleButton(group='mode', state='normal', text='○')
+```
+**學習要點**：適應框架特定的元件實現方式
+
+### 挑戰 9：Kivy UI 佈局和尺寸
+**問題**：在緊湊的 300x200 視窗中文字太小且重疊
+**根本原因**：所有 UI 元件的空間不足
+**解決方案**：將視窗增加到 300x400 並優化所有元件尺寸
+```python
+Window.size = (300, 400)
+# 增加字體大小：標題 (20px)、標籤 (14-16px)、輸入框 (12px)
+```
+**學習要點**：UI 設計需要在功能和可用性之間取得平衡
+
 ## 🛠️ 開發工作流程
 
 ### 1. 環境設定
@@ -279,7 +361,9 @@ def show_popup_alert(message, title="Terraria Timekeeper Alert", duration=10):
 - **套件安裝**：處理私有儲存庫和相依性
 - **Python 相容性**：為特定 Python 版本編寫程式碼
 - **Windows 開發**：處理編碼和執行政策
-- **GUI 開發**：使用 PySimpleGUI 建立使用者友善介面
+- **GUI 開發**：使用 PySimpleGUI 和 Kivy 建立使用者友善介面
+- **跨平台開發**：使用 Kivy 開發多平台應用程式
+- **UI/UX 設計**：平衡功能與視覺效果
 
 ### 問題解決方法
 - **根本原因分析**：始終識別潛在問題
@@ -300,6 +384,8 @@ def show_popup_alert(message, title="Terraria Timekeeper Alert", duration=10):
 - ✅ 程式碼品質良好
 - ✅ 完整的專案文件
 - ✅ Git 版本控制設定完成
+- ✅ 雙版本 GUI 實現（PySimpleGUI + Kivy）
+- ✅ 跨平台支援（Kivy 版本）
 
 ## 📖 未來改進建議
 1. **單元測試**：為所有功能模組建立完整的測試覆蓋
@@ -307,5 +393,33 @@ def show_popup_alert(message, title="Terraria Timekeeper Alert", duration=10):
 3. **多語言支援**：實現完整的多語言介面
 4. **統計分析**：新增遊戲時間統計和分析功能
 5. **備份系統**：實現資料備份和恢復功能
+6. **主題系統**：為 Kivy 版本新增多種背景主題
+7. **行動裝置版本**：利用 Kivy 的跨平台特性開發手機版本
+
+## 🚀 專案成果總結
+
+### 完成的功能
+- **PySimpleGUI 版本**：穩定可靠的經典版本
+- **Kivy 版本**：現代化的跨平台版本
+- **完整的通知系統**：Toast + 彈出視窗雙重提醒
+- **精確的時間管理**：支援秒級精度的計時
+- **獎勵系統**：提前結束遊戲的點數獎勵
+- **資料記錄**：CSV 和 JSON 格式的完整記錄
+
+### 技術成就
+- 解決了多個複雜的技術挑戰
+- 實現了跨平台 GUI 應用程式
+- 建立了完整的開發工作流程
+- 創建了詳細的專案文件
 
 這個專案展示了與 Cursor AI 協作開發的完整流程，從環境設定到最終部署，每個挑戰都成為學習和改進的機會。
+
+```powershell
+# PySimpleGUI 版本
+conda activate py39
+python .\terraria_timekeeper.py
+
+# Kivy 版本
+conda activate py39
+python .\terraria_timekeeper_kivy.py
+```
