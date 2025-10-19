@@ -296,22 +296,22 @@ class MainScreen(Screen):
         title_label = Label(
             text='TERRARIA TIMEKEEPER',
             size_hint=(None, None),
-            size=(280, 30),
+            size=(280, 40),
             pos_hint={'center_x': 0.5, 'top': 0.95},
-            font_size=16,
+            font_size=20,
             bold=True,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(title_label)
         
         # Mode selection (left side)
-        mode_y = 0.75
+        mode_y = 0.80
         mode_label = Label(
             text='MODE:',
             size_hint=(None, None),
-            size=(80, 20),
+            size=(100, 30),
             pos_hint={'x': 0.05, 'top': mode_y},
-            font_size=12,
+            font_size=16,
             bold=True,
             color=(1, 1, 1, 1)
         )
@@ -322,9 +322,10 @@ class MainScreen(Screen):
             group='mode',
             state='down',
             size_hint=(None, None),
-            size=(20, 20),
-            pos_hint={'x': 0.05, 'top': mode_y - 0.1},
-            text='●'
+            size=(25, 25),
+            pos_hint={'x': 0.05, 'top': mode_y - 0.08},
+            text='●',
+            font_size=14
         )
         self.duration_radio.bind(on_press=self.on_duration_selected)
         main_layout.add_widget(self.duration_radio)
@@ -332,9 +333,9 @@ class MainScreen(Screen):
         duration_text = Label(
             text='Duration:',
             size_hint=(None, None),
-            size=(60, 20),
-            pos_hint={'x': 0.15, 'top': mode_y - 0.1},
-            font_size=10,
+            size=(80, 25),
+            pos_hint={'x': 0.15, 'top': mode_y - 0.08},
+            font_size=14,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(duration_text)
@@ -344,18 +345,18 @@ class MainScreen(Screen):
             text='0',
             multiline=False,
             size_hint=(None, None),
-            size=(30, 20),
-            pos_hint={'x': 0.25, 'top': mode_y - 0.1},
-            font_size=10
+            size=(35, 25),
+            pos_hint={'x': 0.25, 'top': mode_y - 0.08},
+            font_size=12
         )
         main_layout.add_widget(self.hours_input)
         
         h_label = Label(
             text='h',
             size_hint=(None, None),
-            size=(15, 20),
-            pos_hint={'x': 0.35, 'top': mode_y - 0.1},
-            font_size=10,
+            size=(15, 25),
+            pos_hint={'x': 0.37, 'top': mode_y - 0.08},
+            font_size=12,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(h_label)
@@ -364,18 +365,18 @@ class MainScreen(Screen):
             text='30',
             multiline=False,
             size_hint=(None, None),
-            size=(30, 20),
-            pos_hint={'x': 0.42, 'top': mode_y - 0.1},
-            font_size=10
+            size=(35, 25),
+            pos_hint={'x': 0.45, 'top': mode_y - 0.08},
+            font_size=12
         )
         main_layout.add_widget(self.minutes_input)
         
         m_label = Label(
             text='m',
             size_hint=(None, None),
-            size=(15, 20),
-            pos_hint={'x': 0.52, 'top': mode_y - 0.1},
-            font_size=10,
+            size=(15, 25),
+            pos_hint={'x': 0.57, 'top': mode_y - 0.08},
+            font_size=12,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(m_label)
@@ -384,18 +385,18 @@ class MainScreen(Screen):
             text='0',
             multiline=False,
             size_hint=(None, None),
-            size=(30, 20),
-            pos_hint={'x': 0.59, 'top': mode_y - 0.1},
-            font_size=10
+            size=(35, 25),
+            pos_hint={'x': 0.65, 'top': mode_y - 0.08},
+            font_size=12
         )
         main_layout.add_widget(self.seconds_input)
         
         s_label = Label(
             text='s',
             size_hint=(None, None),
-            size=(15, 20),
-            pos_hint={'x': 0.69, 'top': mode_y - 0.1},
-            font_size=10,
+            size=(15, 25),
+            pos_hint={'x': 0.77, 'top': mode_y - 0.08},
+            font_size=12,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(s_label)
@@ -405,9 +406,10 @@ class MainScreen(Screen):
             group='mode',
             state='normal',
             size_hint=(None, None),
-            size=(20, 20),
-            pos_hint={'x': 0.05, 'top': mode_y - 0.25},
-            text='○'
+            size=(25, 25),
+            pos_hint={'x': 0.05, 'top': mode_y - 0.18},
+            text='○',
+            font_size=14
         )
         self.until_radio.bind(on_press=self.on_until_selected)
         main_layout.add_widget(self.until_radio)
@@ -415,9 +417,9 @@ class MainScreen(Screen):
         until_text = Label(
             text='Until:',
             size_hint=(None, None),
-            size=(40, 20),
-            pos_hint={'x': 0.15, 'top': mode_y - 0.25},
-            font_size=10,
+            size=(50, 25),
+            pos_hint={'x': 0.15, 'top': mode_y - 0.18},
+            font_size=14,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(until_text)
@@ -426,20 +428,20 @@ class MainScreen(Screen):
             text='22:30',
             multiline=False,
             size_hint=(None, None),
-            size=(50, 20),
-            pos_hint={'x': 0.25, 'top': mode_y - 0.25},
-            font_size=10
+            size=(60, 25),
+            pos_hint={'x': 0.25, 'top': mode_y - 0.18},
+            font_size=12
         )
         main_layout.add_widget(self.until_input)
         
         # Status section (right side)
-        status_y = 0.65
+        status_y = 0.55
         terraria_label = Label(
             text='Terraria:',
             size_hint=(None, None),
-            size=(60, 20),
+            size=(80, 30),
             pos_hint={'x': 0.05, 'top': status_y},
-            font_size=10,
+            font_size=14,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(terraria_label)
@@ -447,9 +449,9 @@ class MainScreen(Screen):
         self.terraria_status = Label(
             text='Detecting...',
             size_hint=(None, None),
-            size=(80, 20),
-            pos_hint={'x': 0.25, 'top': status_y},
-            font_size=10,
+            size=(100, 30),
+            pos_hint={'x': 0.35, 'top': status_y},
+            font_size=14,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(self.terraria_status)
@@ -458,9 +460,9 @@ class MainScreen(Screen):
         remaining_label = Label(
             text='Time:',
             size_hint=(None, None),
-            size=(40, 20),
-            pos_hint={'x': 0.05, 'top': status_y - 0.08},
-            font_size=10,
+            size=(60, 30),
+            pos_hint={'x': 0.05, 'top': status_y - 0.12},
+            font_size=14,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(remaining_label)
@@ -468,9 +470,9 @@ class MainScreen(Screen):
         self.remaining_label = Label(
             text='-',
             size_hint=(None, None),
-            size=(80, 20),
-            pos_hint={'x': 0.25, 'top': status_y - 0.08},
-            font_size=10,
+            size=(100, 30),
+            pos_hint={'x': 0.35, 'top': status_y - 0.12},
+            font_size=14,
             bold=True,
             color=(1, 0.8, 0, 1)
         )
@@ -480,9 +482,9 @@ class MainScreen(Screen):
         progress_label = Label(
             text='Progress:',
             size_hint=(None, None),
-            size=(60, 15),
-            pos_hint={'x': 0.05, 'top': status_y - 0.16},
-            font_size=9,
+            size=(80, 25),
+            pos_hint={'x': 0.05, 'top': status_y - 0.24},
+            font_size=12,
             color=(1, 1, 1, 1)
         )
         main_layout.add_widget(progress_label)
@@ -491,8 +493,8 @@ class MainScreen(Screen):
             max=1,
             value=0,
             size_hint=(None, None),
-            size=(150, 15),
-            pos_hint={'x': 0.25, 'top': status_y - 0.16}
+            size=(180, 25),
+            pos_hint={'x': 0.35, 'top': status_y - 0.24}
         )
         main_layout.add_widget(self.progress_bar)
         
@@ -500,9 +502,9 @@ class MainScreen(Screen):
         self.start_button = Button(
             text='START',
             size_hint=(None, None),
-            size=(80, 25),
-            pos_hint={'x': 0.05, 'top': 0.25},
-            font_size=10,
+            size=(85, 35),
+            pos_hint={'x': 0.05, 'top': 0.15},
+            font_size=12,
             bold=True
         )
         self.start_button.bind(on_press=self.start_timer)
@@ -511,9 +513,9 @@ class MainScreen(Screen):
         self.stop_button = Button(
             text='STOP',
             size_hint=(None, None),
-            size=(80, 25),
-            pos_hint={'x': 0.37, 'top': 0.25},
-            font_size=10,
+            size=(85, 35),
+            pos_hint={'x': 0.37, 'top': 0.15},
+            font_size=12,
             bold=True
         )
         self.stop_button.bind(on_press=self.stop_timer)
@@ -522,9 +524,9 @@ class MainScreen(Screen):
         self.exit_button = Button(
             text='EXIT',
             size_hint=(None, None),
-            size=(80, 25),
-            pos_hint={'x': 0.69, 'top': 0.25},
-            font_size=10,
+            size=(85, 35),
+            pos_hint={'x': 0.69, 'top': 0.15},
+            font_size=12,
             bold=True
         )
         self.exit_button.bind(on_press=self.exit_app)
@@ -641,10 +643,10 @@ class TerrariaTimekeeperApp(App):
         """Build the application"""
         self.title = APP_NAME
         
-        # Set window size to 300x200
-        Window.size = (300, 200)
+        # Set window size to 300x400
+        Window.size = (300, 400)
         Window.minimum_width = 300
-        Window.minimum_height = 200
+        Window.minimum_height = 400
         
         # Create screen manager
         sm = ScreenManager()
