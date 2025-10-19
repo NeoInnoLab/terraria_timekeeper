@@ -24,7 +24,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from kivy.uix.radiobutton import RadioButton
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.popup import Popup
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
@@ -252,7 +252,8 @@ class MainScreen(Screen):
         
         # Duration mode
         duration_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)
-        self.duration_radio = RadioButton(group='mode', active=True, size_hint_x=None, width=30)
+        self.duration_radio = ToggleButton(group='mode', state='down', size_hint_x=None, width=30, text='●')
+        self.duration_radio.bind(on_press=self.on_duration_selected)
         duration_layout.add_widget(self.duration_radio)
         duration_layout.add_widget(Label(text='Play for hours/minutes/seconds:', size_hint_x=None, width=200))
         
@@ -272,7 +273,8 @@ class MainScreen(Screen):
         
         # Until mode
         until_layout = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)
-        self.until_radio = RadioButton(group='mode', active=False, size_hint_x=None, width=30)
+        self.until_radio = ToggleButton(group='mode', state='normal', size_hint_x=None, width=30, text='○')
+        self.until_radio.bind(on_press=self.on_until_selected)
         until_layout.add_widget(self.until_radio)
         until_layout.add_widget(Label(text='Play until time (HH:MM):', size_hint_x=None, width=150))
         self.until_input = TextInput(text='22:30', multiline=False, size_hint_x=None, width=100)
@@ -346,6 +348,20 @@ class MainScreen(Screen):
             self.terraria_status.text = "Not detected ✗"
             self.terraria_status.color = (1, 0, 0, 1)  # Red
 
+    def on_duration_selected(self, instance):
+        """Handle duration mode selection"""
+        self.duration_radio.state = 'down'
+        self.until_radio.state = 'normal'
+        self.duration_radio.text = '●'
+        self.until_radio.text = '○'
+
+    def on_until_selected(self, instance):
+        """Handle until mode selection"""
+        self.until_radio.state = 'down'
+        self.duration_radio.state = 'normal'
+        self.until_radio.text = '●'
+        self.duration_radio.text = '○'
+
     def start_timer(self, instance):
         """Start the timer"""
         if self.monitor_thread and self.monitor_thread.is_alive():
@@ -354,7 +370,7 @@ class MainScreen(Screen):
 
         # Compute planned_end
         session_start = now()
-        if self.duration_radio.active:
+        if self.duration_radio.state == 'down':
             try:
                 h = int(self.hours_input.text or "0")
                 m = int(self.minutes_input.text or "0")
